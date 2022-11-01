@@ -16,3 +16,6 @@ ludo.TryJoin(player4);
 ludo.TryJoin(player5);
 Console.WriteLine("Number of players: " +  ludo.Players.Count());
 Console.WriteLine(ludo.SessionName);
+
+GameContainer container = new GameContainer();
+container.JoinGame<Ludo>(player5);

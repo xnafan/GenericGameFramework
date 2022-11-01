@@ -1,32 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿namespace GenericGameFramework.ClassLibrary;
 
-namespace GenericGameFramework.ClassLibrary
+/// <summary>
+/// The BaseGame class contains the basic
+/// functionality of a hostable game session.
+/// Maybe should be renamed to GameSessionBase?
+/// </summary>
+public abstract class BaseGame
 {
-    public abstract class BaseGame
+    #region Properties and variables
+    //Can anyone join, or do you need to know the ID of this session
+    public bool IsPublic { get; set; }
+    public Guid Id { get; set; }
+    public string SessionName { get; set; } = "";
+    public IEnumerable<Player> Players => GameRules.Players;
+    protected BaseGameRules GameRules { get; set; } 
+    #endregion
+    protected BaseGame(BaseGameRules gameRules, Guid id = new Guid(), bool isPublic = true, string sessionName = "")
     {
-        //Can anyone join, or do you need to know the ID of this session
-        public bool IsPublic { get; set; }
-        public Guid Id { get; set; } = Guid.NewGuid();
-        public string SessionName { get; set; }
-        protected BaseGameRules GameRules { get; set; }
-
-        protected BaseGame(BaseGameRules gameRules)
-        {
-            GameRules = gameRules;
-        }
-        protected BaseGame(BaseGameRules gameRules, Guid id = new Guid(), bool isPublic = true, string sessionName = ""):this(gameRules)
-        {
-            Id = id;
-            IsPublic = isPublic;
-            SessionName = String.IsNullOrEmpty(sessionName) ? $"{GameRules.GameName} {ShortUIDTool.CreateNewShortId()}" : sessionName;
-        }
-
-        public IEnumerable<Player> Players => GameRules.Players; 
-        public bool TryJoin(Player player) => GameRules.TryJoin(player);
-        public virtual string Execute(string action) => GameRules.Execute(action);
+        GameRules = gameRules;
+        Id = id == Guid.Empty ? Guid.NewGuid() : id;
+        IsPublic = isPublic;
+        SessionName = string.IsNullOrEmpty(sessionName) ? $"{GameRules.GameName} {ShortUIDTool.CreateShortId()}" : sessionName;
     }
+
+    public bool TryJoin(Player player) => GameRules.TryJoin(player);
+
+    //shouldn't this have a GameRequest parameter passed
+    //so the game knows which player is requesting it?
+    public virtual string Execute(string action) => GameRules.Execute(action);
+
+    override public string ToString() => $"{GameRules.GameName} {Players.Count()} players";
 }
