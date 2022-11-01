@@ -18,15 +18,27 @@ public class GameContainer
         _games.Add(openGame.Id, openGame);
         return openGame.Id;
     }
+
+    public Guid JoinGame<T>(Guid gameId, Player player) where T : BaseGame, new()
+    {
+        if (_games.TryGetValue(gameId, out var game))
+        {
+            if (game.TryJoin(player))
+            {
+                return game.Id;
+            }
+        }
+        return Guid.Empty;
+    }
     public IEnumerable<BaseGame>? GetGames<T>() where T : BaseGame
     {
         return _games.Where(game => game is T).Cast<T>();
     }
-    public string? Execute(GameRequest request)
+    public string? Execute(GameAction action)
     {
-        if(_games.TryGetValue(request.GameId, out var game))
+        if(_games.TryGetValue(action.GameId, out var game))
         {
-            return game.Execute(request.Action);
+            return game.Execute(action);
         }
         return null;
     }

@@ -3,7 +3,6 @@
 /// <summary>
 /// The BaseGame class contains the basic
 /// functionality of a hostable game session.
-/// Maybe should be renamed to GameSessionBase?
 /// </summary>
 public abstract class BaseGame
 {
@@ -24,10 +23,7 @@ public abstract class BaseGame
     }
 
     public bool TryJoin(Player player) => GameRules.TryJoin(player);
-
-    //shouldn't this have a GameRequest parameter passed
-    //so the game knows which player is requesting it?
-    public virtual string Execute(string action) => GameRules.Execute(action);
+    public virtual string Execute(GameAction action) => GameRules.Execute(action);
 
     override public string ToString() => $"{GameRules.GameName} {Players.Count()} players";
 }

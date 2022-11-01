@@ -38,7 +38,16 @@ public abstract class BaseGameRules
         }
 
     }
-    public abstract string Execute(string action);
+    #endregion
 
-#endregion
+    #region Strategy Pattern implementation
+    public virtual string Execute(GameAction action)
+    {
+        lock (_lockObject)
+        {
+            return ConcreteExecute(action);
+        }
+    }
+    public abstract string ConcreteExecute(GameAction action); 
+    #endregion
 }
